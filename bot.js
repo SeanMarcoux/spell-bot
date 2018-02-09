@@ -116,13 +116,34 @@ function reactToLetter(msg, letterIndex) {
         reactWithEmoji(msg, "🇿");
         break;
     default:
-        reactWithEmoji(msg, "🍆");
+        if(letterIndex < (msg.content.length - 1) && isEmoji(msg.content.charAt(letterIndex) + msg.content.charAt(letterIndex+1) + ""))
+        {
+            reactWithEmoji(msg, msg.content.charAt(letterIndex) + msg.content.charAt(letterIndex+1));
+            letterIndex++;
+        }
+        else
+        {
+            //reactWithEmoji(msg, "🍆");
+        }
   }
   setTimeout(function () {
         letterIndex++;
         if(letterIndex < msg.content.length)
             reactToLetter(msg, letterIndex);
     }, 1000);
+}
+
+function isEmoji(str) {
+    var ranges = [
+        '\ud83c[\udf00-\udfff]', // U+1F300 to U+1F3FF
+        '\ud83d[\udc00-\ude4f]', // U+1F400 to U+1F64F
+        '\ud83d[\ude80-\udeff]' // U+1F680 to U+1F6FF
+    ];
+    if (str.match(ranges.join('|'))) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 async function reactWithEmoji(message, emoji)
