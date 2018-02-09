@@ -34,7 +34,8 @@ client.on('message', msg => {
 });
 
 function reactToLetter(msg, letterIndex) {
-  switch(msg.content.charAt(letterIndex))
+  var message = msg.content.toLowerCase();
+  switch(message.charAt(letterIndex))
   {
     //🇦 🇧 🇨 🇩 🇪 🇫 🇬 🇭 🇮 🇯 🇰 🇱 🇲 🇳 🇴 🇵 🇶 🇷 🇸 🇹 🇺 🇻 🇼 🇽 🇾 🇿
     case 'a':
@@ -116,9 +117,9 @@ function reactToLetter(msg, letterIndex) {
         reactWithEmoji(msg, "🇿");
         break;
     default:
-        if(letterIndex < (msg.content.length - 1) && isEmoji(msg.content.charAt(letterIndex) + msg.content.charAt(letterIndex+1) + ""))
+        if(letterIndex < (message.length - 1) && isEmoji(message.charAt(letterIndex) + message.charAt(letterIndex+1) + ""))
         {
-            reactWithEmoji(msg, msg.content.charAt(letterIndex) + msg.content.charAt(letterIndex+1));
+            reactWithEmoji(msg, message.charAt(letterIndex) + message.charAt(letterIndex+1));
             letterIndex++;
         }
         else
