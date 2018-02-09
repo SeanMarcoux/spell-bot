@@ -120,7 +120,8 @@ function reactToLetter(msg, letterIndex) {
   }
   setTimeout(function () {
         letterIndex++;
-        reactToLetter(msg, letterIndex);
+        if(letterIndex < msg.content.length)
+            reactToLetter(msg, letterIndex);
     }, 1000);
 }
 
