@@ -5,6 +5,8 @@ const client = new Discord.Client();
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
+    client.user.setGame("Being better than all you losers");
+    client.channels.array()[0].send("Hi guys! I'm so excited to be here with you all! :)");
 });
 
 client.on('message', msg => {
@@ -17,17 +19,48 @@ client.on('message', msg => {
        const ayy3 = client.emojis.get("305818615712579584");
        msg.reply("🇦🇾🇾 lmao");
     }
-    if (msg.content === "recurse") {
+    var message = msg.content.toLowerCase();
+    if (message === "recurse") {
       msg.channel.send("recurse");
     }
-    if(msg.content.includes("69")) {
+    if(message.includes("69")) {
         msg.channel.send("nice");
     }
-    if(msg.content.includes("420")) {
+    if(message.includes("420")) {
         msg.reply("blaze it");
     }
-    if(msg.content.includes("sex")) {
+    if(message.includes("sex")) {
         msg.reply("👉👌");
+    }
+    if(message.includes("tian li")) {
+        msg.reply("TL is a sloth racist and no one loves him. He will die alone and unloved and the world will be better for it");
+    }
+    if(message.includes("sean")) {
+        msg.reply("I fukin love that guy. He's my dad <3");
+    }
+    if(message.includes("emili")) {
+        msg.reply("Omolo? What a weeb");
+    }
+    if(message.includes("dias")) {
+        msg.reply("Ayy lmao");
+    }
+    if(message.includes("bruce")) {
+        msg.reply("Broco? He is my black friend, so I can't be racist");
+    }
+    if(message.includes("gab")) {
+        msg.reply("bag of d");
+    }
+    if(message.includes("mehdi")) {
+        msg.reply("What message do I put for mohdo?");
+    }
+    if(message === "spell-bot, i fucking hate your guts")
+    {
+        setTimeout(function () {
+            msg.reply("Guess I'll die");
+            setTimeout(function () {
+                throw 'Goodbye cruel world';
+            }, 1000);
+        }, 1000);
     }
     reactToLetter(msg, 0);
 
@@ -152,4 +185,4 @@ async function reactWithEmoji(message, emoji)
     await message.react(emoji);
 }
 
-client.login('NDExMzkwNDk3NDE2OTM3NDc0.DV7A5Q.xHTX82a7k-LpOg9phiWhvwStHSQ');
+client.login('');
