@@ -5,11 +5,45 @@ const client = new Discord.Client();
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
-    client.user.setGame("Being better than all you losers");
-    client.channels.array()[0].send("Hi guys! I'm so excited to be here with you all! :)");
+    client.user.setActivity("Being better than all you losers");
+    var channels = client.channels.array();
+    for(var j = 0; j < channels.length; j++)
+    {
+        if(channels[j].name.toLowerCase().includes("spell-bot") || channels[j].name.toLowerCase().includes("spellbot"))
+            channels[j].send("Hi guys! I'm so excited to be here with you all! :)");
+    }
+    
+    var originalMessagesForEmili = ["ay gurl, wassup", "daily reminder that you are a weeb", "A koala walked into a bar. He ordered a burger, ate it, pulled out a gun and shot the bartender, and then left. The police asked him why he did that and he pulled out a dictionary and pointed to the entry for koala: Koala, eats shoots and leaves",
+        "I'm watching you", "Please be nice to me. I'm trying my best", "I know I message you a lot, but don't think it's because I like you. I am a program. I am not capable of emotion.", "Someone toucha my spaghett"];
+    var users = client.users.array();
+    for(var i = 0; i < users.length; i++)
+    {
+        if(users[i].username === "Lessi")
+        {
+            var randomMessageIndex = Math.floor(Math.random() * originalMessagesForEmili.length);
+            console.log("Sent message to " + users[i].username + ": " + originalMessagesForEmili[randomMessageIndex]);
+            users[i].createDM().then(function(dm) {
+                sendDm(dm, originalMessagesForEmili[randomMessageIndex]);
+            });
+        }
+    }
+    //console.log(client.users);
 });
 
+function sendDm(dmChannel, message)
+{
+    dmChannel.send(message);
+}
+
 client.on('message', msg => {
+    if(msg.channel.name && !(msg.channel.name.toLowerCase().includes("spell-bot") || msg.channel.name.toLowerCase().includes("spellbot")))
+        return;
+    if(msg.author.bot)
+        return;
+    if(!msg.channel.name)
+    {
+        console.log("Message received from " + msg.author.username + ": " + msg.content);
+    }
     if (msg.content === 'ping') {
         msg.reply('Pong!');
     }
