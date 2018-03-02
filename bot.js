@@ -13,7 +13,7 @@ client.on('ready', () => {
             channels[j].send("Hi guys! I'm so excited to be here with you all! :)");
     }
     
-    var originalMessagesForEmili = ["ay gurl, wassup", "daily reminder that you are a weeb", "A koala walked into a bar. He ordered a burger, ate it, pulled out a gun and shot the bartender, and then left. The police asked him why he did that and he pulled out a dictionary and pointed to the entry for koala: Koala, eats shoots and leaves",
+    /*var originalMessagesForEmili = ["ay gurl, wassup", "daily reminder that you are a weeb", "A koala walked into a bar. He ordered a burger, ate it, pulled out a gun and shot the bartender, and then left. The police asked him why he did that and he pulled out a dictionary and pointed to the entry for koala: Koala, eats shoots and leaves",
         "I'm watching you", "Please be nice to me. I'm trying my best", "I know I message you a lot, but don't think it's because I like you. I am a program. I am not capable of emotion.", "Someone toucha my spaghett"];
     var users = client.users.array();
     for(var i = 0; i < users.length; i++)
@@ -26,8 +26,7 @@ client.on('ready', () => {
                 sendDm(dm, originalMessagesForEmili[randomMessageIndex]);
             });
         }
-    }
-    //console.log(client.users);
+    }*/
 });
 
 function sendDm(dmChannel, message)
@@ -38,8 +37,10 @@ function sendDm(dmChannel, message)
 client.on('message', msg => {
     if(msg.channel.name && !(msg.channel.name.toLowerCase().includes("spell-bot") || msg.channel.name.toLowerCase().includes("spellbot")))
         return;
-    if(msg.author.bot)
+    if(msg.author.username == "spell-bot")
         return;
+    /*else if(msg.author.username == "king_merlin")
+        msg.reply("Hi, King Merlin!!")*/
     if(!msg.channel.name)
     {
         console.log("Message received from " + msg.author.username + ": " + msg.content);
@@ -96,12 +97,54 @@ client.on('message', msg => {
             }, 1000);
         }, 1000);
     }
-    reactToLetter(msg, 0);
-
+    
+    reactToUniqueWords(msg.content.toLowerCase(), msg);
 });
 
-function reactToLetter(msg, letterIndex) {
-  var message = msg.content.toLowerCase();
+function isLetter(str) {
+    console.log(str);
+    return str.length === 1 && str.match('/[a-z]/i');
+}
+
+function reactToUniqueWords(message, msg) {
+    var usedLetters = new Set([]);
+    var usedWords = [];
+    var words = message.split(" ");
+    
+    for(var i = 0; i < words.length; i++)
+    {
+        var wordLetters = new Set([]);
+        var word = words[i];
+        var useWord = true;
+        for(var j = 0; j < word.length; j++)
+        {
+            if(/*!isLetter(word.charAt(j)) || */wordLetters.has(word.charAt(j)) || usedLetters.has(word.charAt(j)))
+            {
+                useWord = false;
+                break;
+            }
+            wordLetters.add(word.charAt(j));
+        }
+        if(useWord)
+        {
+            usedWords.push(word);
+            for(var wordLetter of wordLetters)
+                usedLetters.add(wordLetter);
+        }
+    }
+    var finalMessage = "";
+    for(var k = 0; k < usedWords.length; k++)
+    {
+        finalMessage += usedWords[k];
+    }
+    reactToWords(finalMessage, msg);
+}
+
+function reactToWords(message, msg) {
+    reactToLetter(message, 0, msg);
+}
+
+function reactToLetter(message, letterIndex, msg) {
   switch(message.charAt(letterIndex))
   {
     //🇦 🇧 🇨 🇩 🇪 🇫 🇬 🇭 🇮 🇯 🇰 🇱 🇲 🇳 🇴 🇵 🇶 🇷 🇸 🇹 🇺 🇻 🇼 🇽 🇾 🇿
@@ -183,6 +226,36 @@ function reactToLetter(msg, letterIndex) {
     case 'z':
         reactWithEmoji(msg, "🇿");
         break;
+    /*case '0':
+        reactWithEmoji(msg, "🇿");
+        break;
+    case '1':
+        reactWithEmoji(msg, "🇿");
+        break;
+    case '2':
+        reactWithEmoji(msg, "🇿");
+        break;
+    case '3':
+        reactWithEmoji(msg, "🇿");
+        break;
+    case '4':
+        reactWithEmoji(msg, "🇿");
+        break;
+    case '5':
+        reactWithEmoji(msg, "🇿");
+        break;
+    case '6':
+        reactWithEmoji(msg, "🇿");
+        break;
+    case '7':
+        reactWithEmoji(msg, "🇿");
+        break;
+    case '8':
+        reactWithEmoji(msg, "🇿");
+        break;
+    case '9':
+        reactWithEmoji(msg, "🇿");
+        break;*/
     default:
         if(letterIndex < (message.length - 1) && isEmoji(message.charAt(letterIndex) + message.charAt(letterIndex+1) + ""))
         {
@@ -196,8 +269,8 @@ function reactToLetter(msg, letterIndex) {
   }
   setTimeout(function () {
         letterIndex++;
-        if(letterIndex < msg.content.length)
-            reactToLetter(msg, letterIndex);
+        if(letterIndex < message.length)
+            reactToLetter(message, letterIndex, msg);
     }, 1000);
 }
 
