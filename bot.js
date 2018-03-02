@@ -9,8 +9,8 @@ client.on('ready', () => {
     var channels = client.channels.array();
     for(var j = 0; j < channels.length; j++)
     {
-        if(channels[j].name.toLowerCase().includes("spell-bot") || channels[j].name.toLowerCase().includes("spellbot"))
-            channels[j].send("Hi guys! I'm so excited to be here with you all! :)");
+        //if(channels[j].name.toLowerCase().includes("spell-bot") || channels[j].name.toLowerCase().includes("spellbot"))
+        //    channels[j].send("Hi guys! I'm so excited to be here with you all! :)");
     }
     
     /*var originalMessagesForEmili = ["ay gurl, wassup", "daily reminder that you are a weeb", "A koala walked into a bar. He ordered a burger, ate it, pulled out a gun and shot the bartender, and then left. The police asked him why he did that and he pulled out a dictionary and pointed to the entry for koala: Koala, eats shoots and leaves",
@@ -110,15 +110,26 @@ function reactToUniqueWords(message, msg) {
     var usedLetters = new Set([]);
     var usedWords = [];
     var words = message.split(" ");
-    
+    var sortedWords = [];
+    //Hard copy of array so I can keep the original order of words
     for(var i = 0; i < words.length; i++)
     {
+        sortedWords.push(words[i]);
+    }
+    sortedWords.sort(function(a, b){
+      return b.length - a.length;
+    });
+    
+    //Loop through all words to find ones with repeating letters
+    for(var i = 0; i < sortedWords.length; i++)
+    {
         var wordLetters = new Set([]);
-        var word = words[i];
+        var word = sortedWords[i];
         var useWord = true;
         for(var j = 0; j < word.length; j++)
         {
-            if(/*!isLetter(word.charAt(j)) || */wordLetters.has(word.charAt(j)) || usedLetters.has(word.charAt(j)))
+            //If word has a repeating letter with itself or another word that has already been used
+            if(wordLetters.has(word.charAt(j)) || usedLetters.has(word.charAt(j)))
             {
                 useWord = false;
                 break;
@@ -132,10 +143,12 @@ function reactToUniqueWords(message, msg) {
                 usedLetters.add(wordLetter);
         }
     }
+    //Construct the final reaction message in the correct order
     var finalMessage = "";
-    for(var k = 0; k < usedWords.length; k++)
+    for(var k = 0; k < words.length; k++)
     {
-        finalMessage += usedWords[k];
+        if(usedWords.includes(words[k]))
+            finalMessage += words[k];
     }
     reactToWords(finalMessage, msg);
 }
