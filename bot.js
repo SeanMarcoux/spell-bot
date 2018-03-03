@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
-
+const fs = require('fs');
+const request = require('request');
 
 
 client.on('ready', () => {
@@ -55,6 +56,24 @@ client.on('message', msg => {
        msg.reply("🇦🇾🇾 lmao");
     }
     var message = msg.content.toLowerCase();
+    reactToBS(msg, message);
+    reactToNames(msg, message);
+    
+    if(message === "spell-bot, i fucking hate your guts")
+    {
+        setTimeout(function () {
+            msg.reply("Guess I'll die");
+            setTimeout(function () {
+                throw 'Goodbye cruel world';
+            }, 1000);
+        }, 1000);
+    }
+    
+    reactToUniqueWords(msg.content.toLowerCase(), msg);
+});
+
+function reactToBS(msg, message)
+{
     if (message === "recurse") {
       msg.channel.send("recurse");
     }
@@ -67,6 +86,52 @@ client.on('message', msg => {
     if(message.includes("sex")) {
         msg.reply("👉👌");
     }
+    if(message.includes("waifu")) {
+        noWaifuNoLaifu(msg);
+    }
+}
+
+function noWaifuNoLaifu(msg) {
+    //console.log(msg.attachments);
+    var attachments = msg.attachments.array();
+    if(attachments.length == 0) {
+        var files = fs.readdirSync("waifus");
+        var waifuPic = files[getRandomInt(0, files.length-1)];
+        msg.channel.send("", new Discord.Attachment("waifus/"+waifuPic));
+    }
+    else {
+        var filename_count = 0;
+        for(var i=0; i < attachments.length; i++) {
+            console.log("Downloading file " + attachments[i].filename);
+            var filename = attachments[i].filename;
+            while(fs.existsSync("waifus/"+filename)) {
+                filename_count++;
+                split_name = filename.split(".");
+                filename = filename_count + "." + split_name[split_name.length-1];
+            }
+            console.log("Downloading it as " + filename);
+            download(attachments[i].url, "waifus/"+filename, function() {
+                console.log("Done");
+            });
+        }
+    }
+}
+
+function download(uri, filename, callback){
+  request.head(uri, function(err, res, body){
+    console.log('content-type:', res.headers['content-type']);
+    console.log('content-length:', res.headers['content-length']);
+
+    request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+  });
+}
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function reactToNames(msg, message)
+{
     if(message.includes("tian li")) {
         msg.reply("TL is a sloth racist and no one loves him. He will die alone and unloved and the world will be better for it");
     }
@@ -88,18 +153,7 @@ client.on('message', msg => {
     if(message.includes("mehdi")) {
         msg.reply("What message do I put for mohdo?");
     }
-    if(message === "spell-bot, i fucking hate your guts")
-    {
-        setTimeout(function () {
-            msg.reply("Guess I'll die");
-            setTimeout(function () {
-                throw 'Goodbye cruel world';
-            }, 1000);
-        }, 1000);
-    }
-    
-    reactToUniqueWords(msg.content.toLowerCase(), msg);
-});
+}
 
 function isLetter(str) {
     console.log(str);
